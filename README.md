@@ -121,7 +121,7 @@ database="smartcity_db"
 
 ### 4.Running the Application
 Start the Flask server:
-    ``` python
+    ```
     python app.py
     ```
   
