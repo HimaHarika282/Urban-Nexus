@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+    body {
+        background: linear-gradient(135deg, #c6ffdd, #fbd786, #f7797d);
+        background-attachment: fixed;
+    }
+
+    .electricity-box {
+        background: rgba(255, 255, 255, 0.8);
+        padding: 25px;
+        border-radius: 14px;
+        box-shadow: 0px 6px 20px rgba(0,0,0,0.15);
+    }
+
+    .table thead {
+        background-color: #2e7d32;
+        color: white;
+    }
+
+    .status-badge {
+        padding: 5px 10px;
+        border-radius: 8px;
+        font-weight: 600;
+    }
+
+    .pending { background: #fff3cd; color: #8a6d3b; }
+    .inprogress { background: #bbdefb; color: #0d47a1; }
+    .resolved { background: #c8e6c9; color: #1b5e20; }
+
+    .update-btn {
+        border-radius: 20px;
+        padding: 5px 12px;
+        font-size: 0.85rem;
+    }
+
+    /* Hover effect */
+    .update-btn:hover {
+        opacity: 0.85;
+    }
+</style>
+
+<div class="container mt-4 electricity-box">
+
+    <h2 class="text-center mb-4" style="color:#1b5e20;">
+        ⚡ Electricity Department Dashboard
+    </h2>
+
+    <!-- Search + Filter Row -->
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <input id="searchInput" class="form-control" placeholder="Search by name, location, description...">
+        </div>
+        <div class="col-md-3">
+            <select id="statusFilter" class="form-select">
+                <option value="">Filter by Status</option>
+                <option value="Pending">Pending</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Resolved">Resolved</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Requests Table -->
+    <div class="table-responsive mt-3">
+        <table class="table table-bordered table-hover" id="electricityTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Citizen</th>
+                    <th>Description</th>
+                    <th>Location</th>
+                    <th>Status</th>
+                    <th>Time</th>
+                    <th>Update</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for r in requests %}
+                <tr>
+                    <td>{{ r.id }}</td>
+                    <td>{{ r.citizen_name }}</td>
+                    <td>{{ r.description }}</td>
+                    <td>{{ r.location }}</td>
+
+                    <!-- STATUS BADGE -->
+                    <td>
+                        {% if r.status == "Pending" %}
+                            <span class="status-badge pending">Pending</span>
+                        {% elif r.status == "In Progress" %}
+                            <span class="status-badge inprogress">In Progress</span>
+                        {% else %}
+                            <span class="status-badge resolved">Resolved</span>
+                        {% endif %}
+                    </td>
+
+                    <td>{{ r.timestamp }}</td>
+
+                    <!-- UPDATE BUTTONS -->
+                    <td>
+                        <a href="{{ url_for('authority_bp.update_electricity_request', req_id=r.id, new_status='Pending') }}"
+                           class="btn btn-warning btn-sm update-btn mb-1">Pending</a>
+
+                        <a href="{{ url_for('authority_bp.update_electricity_request', req_id=r.id, new_status='In Progress') }}"
+                           class="btn btn-primary btn-sm update-btn mb-1">In Progress</a>
+
+                        <a href="{{ url_for('authority_bp.update_electricity_request', req_id=r.id, new_status='Resolved') }}"
+                           class="btn btn-success btn-sm update-btn">Resolved</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+</div>
+
+
+<script>
+// SEARCH + FILTER
+document.getElementById("searchInput").addEventListener("keyup", filterTable);
+document.getElementById("statusFilter").addEventListener("change", filterTable);
+
+function filterTable() {
+    let searchValue = document.getElementById("searchInput").value.toLowerCase();
+    let statusValue = document.getElementById("statusFilter").value;
+    let rows = document.querySelectorAll("#electricityTable tbody tr");
+
+    rows.forEach(row => {
+        let text = row.innerText.toLowerCase();
+        let status = row.children[4].innerText;
+
+        if (text.includes(searchValue) && (statusValue === "" || status.includes(statusValue))) {
+            row.style.display = "";
+        } else {
+            row.style.display = "none";
+        }
+    });
+}
+</script>
+
+{% endblock %}

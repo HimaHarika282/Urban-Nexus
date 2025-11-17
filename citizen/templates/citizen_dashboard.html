@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Citizen Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:700,400|Shadows+Into+Light&display=swap" rel="stylesheet"/>
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet"/>
+  <style>
+    /* --- Background --- */
+    html, body {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: 'Montserrat', sans-serif;
+      background: url("https://as2.ftcdn.net/v2/jpg/02/77/65/09/1000_F_277650918_hkzskJyTUvlLkE0GUMLB8MysudPIg8kE.jpg") center/cover no-repeat;
+      position: relative;
+      overflow: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle at 1px 1px, rgba(97, 141, 230, 0.12) 1px, transparent 0);
+      background-size: 28px 28px;
+      opacity: 0.7;
+      animation: movePattern 45s linear infinite;
+      z-index: 0;
+    }
+
+    @keyframes movePattern {
+      from { background-position: 0 0; }
+      to { background-position: 300px 300px; }
+    }
+
+    /* --- Waves --- */
+    .background-waves {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 180px;
+      background: url('https://svgshare.com/i/16gE.svg') repeat-x;
+      background-size: cover;
+      animation: waveMove 40s linear infinite;
+      opacity: 0.3;
+      z-index: 0;
+    }
+
+    @keyframes waveMove {
+      from { background-position-x: 0; }
+      to { background-position-x: 1000px; }
+    }
+
+    /* --- Floating icons --- */
+    .floating-icons i {
+      position: absolute;
+      color: rgba(64, 110, 181, 0.25);
+      font-size: 3.5em;
+      animation: floatUp 12s ease-in-out infinite alternate;
+      z-index: 4;
+    }
+
+    .floating-icons i:nth-child(1) { left: 5%; top: 60%; animation-delay: 1s; }
+    .floating-icons i:nth-child(2) { left: 15%; top: 70%; animation-delay: 3s; }
+    .floating-icons i:nth-child(3) { right: 10%; top: 65%; animation-delay: 2s; }
+    .floating-icons i:nth-child(4) { right: 20%; top: 75%; animation-delay: 4s; }
+
+    @keyframes floatUp {
+      0% { transform: translateY(0px); opacity: 0.6; }
+      100% { transform: translateY(-10px); opacity: 0.9; }
+    }
+
+    /* --- Header --- */
+    .header-nav {
+      width: 100%;
+      background: linear-gradient(90deg, #4b6cb7, #182848);
+      box-shadow: 0 2px 12px rgba(56,120,255,0.15);
+      padding: 0.8em 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: fixed;
+      top: 0;
+      z-index: 10;
+    }
+
+    .header-nav .logo {
+      font-size: 2em;
+      color: #fff;
+      font-weight: 900;
+      letter-spacing: 0.05em;
+      margin-right: 3em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .header-nav .logo i { font-size: 1.6em; }
+    .header-nav nav { display: flex; gap: 2.2em; align-items: center; }
+    .header-nav nav a {
+      color: #fff;
+      font-weight: 700;
+      text-decoration: none;
+      font-size: 1.25em;
+      padding: 10px 20px;
+      border-radius: 1.5em;
+      transition: background 0.26s, color 0.26s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .header-nav nav a:hover, .header-nav nav a.active {
+      background: #e7f5ff;
+      color: #073a65;
+    }
+
+    /* --- Dashboard --- */
+    .dashboard-center-outer {
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .center-core {
+      position: absolute;
+      background: linear-gradient(145deg, #ffffff, #d8e7fb);
+      color: #0e4574;
+      font-weight: 800;
+      border: 4px solid #e6efff;
+      border-radius: 50%;
+      box-shadow: 0 8px 25px rgba(30, 70, 140, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: 2.1em;
+      width: 240px;
+      height: 240px;
+      z-index: 4;
+      transition: transform 0.4s ease;
+    }
+
+    .center-core:hover { transform: scale(1.07); }
+
+    .cloud-cards-ring {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    .cloud-card {
+      position: absolute;
+      background: linear-gradient(145deg, #fefeff 0%, #e8f3ff 100%);
+      color: #123f63;
+      box-shadow: 0 6px 25px rgba(0,0,0,0.12);
+      border-radius: 35% 50% 40% 55% / 55% 40% 65% 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 190px;
+      height: 140px;
+      z-index: 3;
+      cursor: pointer;
+      pointer-events: auto;
+      transition: 0.35s ease;
+      text-align: center;
+      backdrop-filter: blur(2px);
+      animation: floaty 6s ease-in-out infinite alternate;
+    }
+
+    .cloud-card .icon {
+      font-size: 2.5em;
+      color: #0a4d85;
+      margin-bottom: 6px;
+    }
+
+    .cloud-card:hover {
+      transform: scale(1.12);
+      background: linear-gradient(120deg, #eaf6ff, #ffffff);
+    }
+
+    @media (max-width: 900px) {
+      .cloud-card { width: 130px; height: 100px; }
+      .center-core { width: 160px; height: 160px; font-size: 1.5em; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header-nav">
+    <span class="logo"><i class='bx bx-buildings'></i> URBAN NEXUS</span>
+    <nav>
+      <a href="{{url_for('citizen_bp.index')}}"><i class='bx bx-home'></i>Home</a>
+      <a href="{{ url_for('citizen_bp.profile') }}"><i class='bx bx-user'></i>Profile</a>
+      <a href="{{url_for('citizen_bp.about')}}"><i class='bx bx-info-circle'></i>About</a>
+      <a href="{{url_for('citizen_bp.contact')}}"><i class='bx bx-phone'></i>Contact</a>
+      <a href="{{url_for('citizen_bp.index')}}"><i class='bx bx-log-out'></i>Logout</a>
+    </nav>
+  </div>
+
+  <main class="dashboard-center-outer">
+    <div class="center-core">Citizen<br>Dashboard</div>
+
+    <div class="cloud-cards-ring" id="dashboardRing">
+      <a href="{{url_for('citizen_bp.properties')}}" class="cloud-card"><span class="icon"><i class='bx bx-home-heart'></i></span><span class="card-title">Properties</span></a>
+      <a href="{{url_for('citizen_bp.utility')}}" class="cloud-card"><span class="icon"><i class='bx bx-water'></i></span><span class="card-title">Utilities</span></a>
+      <a href="{{url_for('citizen_bp.citizen_requests')}}" class="cloud-card"><span class="icon"><i class='bx bx-mail-send'></i></span><span class="card-title">Requests</span></a>
+      <a href="{{url_for('citizen_bp.emergency_requests')}}" class="cloud-card"><span class="icon"><i class='bx bx-error-circle'></i></span><span class="card-title">Emergency</span></a>
+      <a href="{{url_for('citizen_bp.transport')}}" class="cloud-card"><span class="icon"><i class='bx bx-bus'></i></span><span class="card-title">Transport</span></a>
+      <a class="cloud-card"><span class="icon"><i class='bx bxs-microphone-alt'></i></span><span class="card-title">Announcements</span></a>
+    </div>
+
+    <div class="floating-icons">
+      <i class='bx bx-tree'></i>
+      <i class='bx bx-cloud'></i>
+      <i class='bx bx-buildings'></i>
+      <i class='bx bx-sun'></i>
+    </div>
+
+    <div class="background-waves"></div>
+  </main>
+
+  <script>
+    function layoutDashboardRing() {
+      const ring = document.getElementById('dashboardRing');
+      const cards = Array.from(ring.querySelectorAll('.cloud-card'));
+      const n = cards.length;
+      const headerHeight = document.querySelector('.header-nav').offsetHeight;
+      const radius = Math.min(window.innerWidth, window.innerHeight - headerHeight) / 2.6;
+      const centerX = window.innerWidth / 2;
+      const centerY = (window.innerHeight + headerHeight) / 2;
+
+      cards.forEach((card, i) => {
+        const angle = (2 * Math.PI / n) * i - Math.PI / 2;
+        const x = centerX + radius * Math.cos(angle) - card.offsetWidth / 2;
+        const y = centerY + radius * Math.sin(angle) - card.offsetHeight / 2;
+        card.style.left = `${x}px`;
+        card.style.top = `${y}px`;
+      });
+    }
+
+    window.addEventListener('resize', layoutDashboardRing);
+    window.addEventListener('DOMContentLoaded', layoutDashboardRing);
+  </script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+/* Soft medical background */
+.hospital-bg {
+    background: linear-gradient(135deg, #e3f2fd, #ffffff);
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0px 4px 15px rgba(0,0,0,0.08);
+}
+</style>
+
+<div class="container mt-4 hospital-bg">
+
+    <h2 class="text-center mb-4 text-danger">🚨 Emergency Requests</h2>
+
+    <!-- Search + Status Filter -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <input id="searchEmergency" class="form-control" placeholder="Search emergencies...">
+        </div>
+
+        <div class="col-md-3">
+            <select id="statusEmergency" class="form-select">
+                <option value="">Filter Status</option>
+                <option value="Pending">Pending</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Handled">Handled</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover" id="emergencyTable">
+            <thead class="table-danger">
+                <tr>
+                    <th>ID</th>
+                    <th>Citizen</th>
+                    <th>Location</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Time</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for e in emergencies %}
+                <tr>
+                    <td>{{ e.id }}</td>
+                    <td>{{ e.citizen_name }}</td>
+                    <td>{{ e.location }}</td>
+                    <td>{{ e.description }}</td>
+
+                    <!-- Status Badge -->
+                    <td>
+                        {% if e.status == "Pending" %}
+                            <span class="badge bg-warning text-dark">Pending</span>
+                        {% elif e.status == "In Progress" %}
+                            <span class="badge bg-primary">In Progress</span>
+                        {% else %}
+                            <span class="badge bg-success">Handled</span>
+                        {% endif %}
+                    </td>
+
+                    <td>{{ e.timestamp }}</td>
+
+                    <!-- Update Buttons -->
+                    <td>
+                        <div class="btn-group">
+                            <a href="{{ url_for('authority_bp.update_hospital_emergency', req_id=e.id, status='Pending') }}"
+                               class="btn btn-sm btn-warning text-dark">Pending</a>
+
+                            <a href="{{ url_for('authority_bp.update_hospital_emergency', req_id=e.id, status='In Progress') }}"
+                               class="btn btn-sm btn-primary">In Progress</a>
+
+                            <a href="{{ url_for('authority_bp.update_hospital_emergency', req_id=e.id, status='Handled') }}"
+                               class="btn btn-sm btn-success">Handled</a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script>
+// Search + Filter Functionality
+function filterEmergency() {
+    let searchValue = document.getElementById("searchEmergency").value.toLowerCase();
+    let statusValue = document.getElementById("statusEmergency").value;
+    let rows = document.querySelectorAll("#emergencyTable tbody tr");
+
+    rows.forEach(row => {
+        let text = row.innerText.toLowerCase();
+        let status = row.children[4].innerText;
+
+        row.style.display = (text.includes(searchValue) && 
+                             (statusValue === "" || status.includes(statusValue))) 
+                             ? "" : "none";
+    });
+}
+
+document.getElementById("searchEmergency").addEventListener("keyup", filterEmergency);
+document.getElementById("statusEmergency").addEventListener("change", filterEmergency);
+</script>
+
+{% endblock %}

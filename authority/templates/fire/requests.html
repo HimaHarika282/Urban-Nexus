@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+    body {
+        background: linear-gradient(120deg, #ba36c6, #9b33a0);
+        background-attachment: fixed;
+    }
+
+    .fire-card {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0px 4px 18px rgba(0,0,0,0.3);
+        backdrop-filter: blur(5px);
+    }
+
+    th {
+        background-color: #df5286 !important;
+        color: white !important;
+    }
+
+    .btn-status {
+        width: 100px;
+    }
+</style>
+
+<div class="container mt-4 fire-card">
+
+    <h2 class="text-center mb-4 text-danger fw-bold">🔥 Fire Department Requests</h2>
+
+    <!-- Search + Filter -->
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <input id="fireSearch" class="form-control" placeholder="Search by citizen, location or description...">
+        </div>
+        <div class="col-md-3">
+            <select id="fireFilter" class="form-select">
+                <option value="">Filter Status</option>
+                <option value="Pending">Pending</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Resolved">Resolved</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Fire Requests Table -->
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover" id="fireTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Citizen</th>
+                    <th>Description</th>
+                    <th>Location</th>
+                    <th>Status</th>
+                    <th>Time</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for req in fire_requests %}
+                <tr>
+                    <td>{{ req.id }}</td>
+                    <td>{{ req.citizen_name }}</td>
+                    <td>{{ req.description }}</td>
+                    <td>{{ req.location }}</td>
+
+                    <td>
+                        {% if req.status == "Pending" %}
+                            <span class="badge bg-warning text-dark">Pending</span>
+                        {% elif req.status == "In Progress" %}
+                            <span class="badge bg-primary">In Progress</span>
+                        {% else %}
+                            <span class="badge bg-success">Resolved</span>
+                        {% endif %}
+                    </td>
+
+                    <td>{{ req.timestamp }}</td>
+
+                    <td>
+                        <a href="{{ url_for('authority_bp.update_fire_request', req_id=req.id, new_status='Pending') }}"
+                           class="btn btn-warning btn-sm btn-status mb-1">Pending</a>
+
+                        <a href="{{ url_for('authority_bp.update_fire_request', req_id=req.id, new_status='In Progress') }}"
+                           class="btn btn-primary btn-sm btn-status mb-1">Progress</a>
+
+                        <a href="{{ url_for('authority_bp.update_fire_request', req_id=req.id, new_status='Resolved') }}"
+                           class="btn btn-success btn-sm btn-status">Resolved</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script>
+// SEARCH + FILTER
+function filterFireRequests() {
+    let search = document.getElementById("fireSearch").value.toLowerCase();
+    let filter = document.getElementById("fireFilter").value;
+    let rows = document.querySelectorAll("#fireTable tbody tr");
+
+    rows.forEach(row => {
+        let text = row.innerText.toLowerCase();
+        let status = row.children[4].innerText;
+
+        row.style.display = (text.includes(search) && 
+                            (filter === "" || status.includes(filter))) 
+                            ? "" 
+                            : "none";
+    });
+}
+
+document.getElementById("fireSearch").addEventListener("keyup", filterFireRequests);
+document.getElementById("fireFilter").addEventListener("change", filterFireRequests);
+</script>
+
+{% endblock %}

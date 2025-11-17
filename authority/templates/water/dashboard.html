@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+.water-bg {
+    background: linear-gradient(135deg, #0077b6, #0096c7, #00b4d8);
+    padding: 35px;
+    border-radius: 12px;
+    color: white;
+}
+
+/* Glass table container */
+.glass-box {
+    background: rgba(255,255,255,0.20);
+    backdrop-filter: blur(10px);
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0px 8px 20px rgba(0,0,0,0.3);
+}
+
+/* Filters */
+.filter-box {
+    background: rgba(255,255,255,0.25);
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+/* Table style */
+thead {
+    background: #023e8a;
+    color: white;
+}
+
+tbody tr:hover {
+    background: rgba(255,255,255,0.15);
+}
+</style>
+
+
+<div class="container water-bg">
+
+    <h2 class="text-center mb-4 fw-bold" style="text-shadow: 0 0 8px rgba(0,0,0,0.3)">
+        💧 Water Department — Requests
+    </h2>
+
+    <!-- Filters -->
+    <div class="filter-box">
+        <div class="row">
+            <div class="col-md-6">
+                <input id="searchInput" class="form-control" placeholder="Search by name, location, description...">
+            </div>
+
+            <div class="col-md-3">
+                <select id="statusFilter" class="form-select">
+                    <option value="">Filter Status</option>
+                    <option value="Pending">Pending</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Resolved">Resolved</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Requests Table -->
+    <div class="glass-box table-responsive">
+        <table class="table table-hover text-white" id="waterRequestTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Citizen</th>
+                    <th>Description</th>
+                    <th>Location</th>
+                    <th>Status</th>
+                    <th>Time</th>
+                    <th>Update</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for r in requests %}
+                <tr>
+                    <td>{{ r.id }}</td>
+                    <td>{{ r.citizen_name }}</td>
+                    <td>{{ r.description }}</td>
+                    <td>{{ r.location }}</td>
+
+                    <td>
+                        {% if r.status == "Pending" %}
+                            <span class="badge bg-warning text-dark">Pending</span>
+                        {% elif r.status == "In Progress" %}
+                            <span class="badge bg-primary">In Progress</span>
+                        {% else %}
+                            <span class="badge bg-success">Resolved</span>
+                        {% endif %}
+                    </td>
+
+                    <td>{{ r.timestamp }}</td>
+
+                    <td>
+                        <a href="{{ url_for('authority_bp.update_water_request', req_id=r.id, new_status='Pending') }}"
+                           class="btn btn-warning btn-sm mb-1">Pending</a>
+
+                        <a href="{{ url_for('authority_bp.update_water_request', req_id=r.id, new_status='In Progress') }}"
+                           class="btn btn-primary btn-sm mb-1">Progress</a>
+
+                        <a href="{{ url_for('authority_bp.update_water_request', req_id=r.id, new_status='Resolved') }}"
+                           class="btn btn-success btn-sm">Resolved</a>
+                    </td>
+
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+
+</div>
+
+
+<script>
+// SEARCH + FILTER
+function filterWater() {
+    let searchValue = document.getElementById("searchInput").value.toLowerCase();
+    let statusValue = document.getElementById("statusFilter").value;
+    let rows = document.querySelectorAll("#waterRequestTable tbody tr");
+
+    rows.forEach(row => {
+        let rowText = row.innerText.toLowerCase();
+        let rowStatus = row.children[4].innerText;
+
+        row.style.display =
+            (rowText.includes(searchValue) && (statusValue === "" || rowStatus.includes(statusValue)))
+            ? ""
+            : "none";
+    });
+}
+
+document.getElementById("searchInput").addEventListener("keyup", filterWater);
+document.getElementById("statusFilter").addEventListener("change", filterWater);
+</script>
+
+{% endblock %}

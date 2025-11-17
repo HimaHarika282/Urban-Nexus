@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+    body {
+        background: linear-gradient(135deg, #4e54c8, #8f94fb);
+        background-attachment: fixed;
+    }
+
+    .glass-table {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(8px);
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    }
+
+    th {
+        background: rgba(0, 0, 0, 0.4);
+        color: white;
+    }
+</style>
+
+<div class="container mt-4 glass-table">
+
+    <h2 class="text-center mb-4 text-white">🏞 Infrastructure Properties</h2>
+
+    <!-- Search + Filter -->
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <input id="searchProp" class="form-control" placeholder="Search properties...">
+        </div>
+        <div class="col-md-3">
+            <select class="form-select" id="filterType">
+                <option value="">Filter by Type</option>
+                <option>Park</option>
+                <option>Statue</option>
+                <option>Government Building</option>
+            </select>
+        </div>
+    </div>
+
+    <table class="table table-hover table-bordered" id="propertyTable">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Location</th>
+                <th>Year Built</th>
+                <th>Last Renovated</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for p in properties %}
+            <tr>
+                <td>{{ p.name }}</td>
+                <td>{{ p.type }}</td>
+                <td>{{ p.location }}</td>
+                <td>{{ p.year_built }}</td>
+                <td>{{ p.last_renovated }}</td>
+                <td>{{ p.status }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+document.getElementById("searchProp").addEventListener("keyup", filterProps);
+document.getElementById("filterType").addEventListener("change", filterProps);
+
+function filterProps() {
+    let search = document.getElementById("searchProp").value.toLowerCase();
+    let type = document.getElementById("filterType").value;
+    let rows = document.querySelectorAll("#propertyTable tbody tr");
+
+    rows.forEach(r => {
+        let text = r.innerText.toLowerCase();
+        let t = r.children[1].innerText;
+        r.style.display = (text.includes(search) && (type === "" || t === type)) ? "" : "none";
+    });
+}
+</script>
+
+{% endblock %}

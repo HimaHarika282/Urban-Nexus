@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Citizen Requests</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #c3cfe2, #f5f7fa);
+      overflow-x: hidden;
+    }
+
+    header {
+      background: #105a53;
+      color: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    header h1 {
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      margin: 0;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-size: 15px;
+      padding: 8px 14px;
+      border-radius: 6px;
+      transition: background 0.3s ease;
+    }
+
+    nav a:hover { background: rgba(255,255,255,0.2); }
+    .logout-btn { background: #ff4d4d; font-weight: bold; }
+    .logout-btn:hover { background: #d63031; }
+
+    .dashboard { display: flex; height: calc(100vh - 70px); }
+
+    .sidebar {
+      width: 220px;
+      background: #105a53;
+      padding-top: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar a {
+      color: white;
+      text-decoration: none;
+      padding: 14px 20px;
+      display: block;
+      font-size: 15px;
+      border-left: 4px solid transparent;
+      transition: 0.3s ease;
+    }
+
+    .sidebar a:hover, .sidebar a.active { 
+      background: rgba(255,255,255,0.15);
+      border-left: 4px solid #fff;
+    }
+
+    .content {
+      flex: 1;
+      padding: 40px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+
+    .form-card, .table-card {
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #105a53;
+    }
+
+    label {
+      font-weight: 500;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    input[type="text"], textarea, select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    button {
+      background: #105a53;
+      color: white;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 15px;
+      transition: 0.3s ease;
+    }
+
+    button:hover { background: #0e4d4b; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+    }
+
+    th {
+      background: #105a53;
+      color: white;
+    }
+
+    .status-pending { color: orange; font-weight: bold; }
+    .status-approved { color: green; font-weight: bold; }
+    .status-rejected { color: red; font-weight: bold; }
+
+    @media(max-width: 900px) {
+      .dashboard { flex-direction: column; }
+      .sidebar { width: 100%; flex-direction: row; overflow-x: auto; }
+      .sidebar a { flex: 1; text-align: center; border-left: none; border-bottom: 2px solid transparent; }
+      .sidebar a:hover, .sidebar a.active { border-bottom: 2px solid #fff; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>URBAN NEXUS</h1>
+    <nav>
+      <a href="{{ url_for('citizen_bp.index') }}">Home</a>
+      <a href="{{ url_for('citizen_bp.about') }}">About Us</a>
+      <a href="{{ url_for('citizen_bp.contact') }}">Contact</a>
+      <a href="{{ url_for('citizen_bp.profile') }}" class="profile">
+        <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Profile" style="width:35px;height:35px;border-radius:50%;">
+      </a>
+      <a href="{{ url_for('citizen_bp.citizen_login') }}" class="logout-btn">Logout</a>
+    </nav>
+  </header>
+
+  <div class="dashboard">
+    <aside class="sidebar">
+      <a href="{{ url_for('citizen_bp.properties') }}">Properties</a>
+      <a href="{{ url_for('citizen_bp.utility') }}">Utilities</a>
+      <a href="{{ url_for('citizen_bp.citizen_requests') }}" class="active">Requests</a>
+      <a href="{{ url_for('citizen_bp.emergency_requests') }}">Emergency</a>
+      <a href="{{ url_for('citizen_bp.transport') }}">Transport</a>
+    </aside>
+
+    <main class="content">
+
+      <div class="form-card">
+        <h2>Submit a New Request</h2>
+        <form action="/requests" method="POST">
+          <label for="department">Select Department</label>
+          <select name="department" id="department" required>
+            <option value="">-- Select --</option>
+            {% for dept in departments %}
+              <option value="{{ dept }}">{{ dept }}</option>
+            {% endfor %}
+          </select>
+
+          <label for="description">Description</label>
+          <textarea name="description" id="description" rows="3" required></textarea>
+
+          <label for="location">Location</label>
+          <input type="text" name="location" id="location" required>
+
+          <button type="submit">Submit Request</button>
+        </form>
+      </div>
+
+      <div class="table-card">
+        <h2>Your Previous Requests</h2>
+        {% if requests %}
+          <table>
+            <tr>
+              <th>ID</th>
+              <th>Department</th>
+              <th>Description</th>
+              <th>Location</th>
+              <th>Status</th>
+              <th>Timestamp</th>
+            </tr>
+            {% for req in requests %}
+            <tr>
+              <td>{{ req.id }}</td>
+              <td>{{ req.department_name }}</td>
+              <td>{{ req.description }}</td>
+              <td>{{ req.location }}</td>
+              <td>
+                {% if req.status == 'Pending' %}
+                  <span class="status-pending">Pending</span>
+                {% elif req.status == 'Resolved' %}
+                  <span class="status-approved">Resolved</span>
+                {% else %}
+                  <span class="status-rejected">In Progress</span>
+                {% endif %}
+              </td>
+              <td>{{ req.timestamp }}</td>
+            </tr>
+            {% endfor %}
+          </table>
+        {% else %}
+          <p>No requests submitted yet.</p>
+        {% endif %}
+      </div>
+
+    </main>
+  </div>
+
+</body>
+</html>

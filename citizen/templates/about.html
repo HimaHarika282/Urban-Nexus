@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>About Us | Smart City DBMS</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: hsl(210, 80%, 45%);
+      --accent: hsl(260, 80%, 65%);
+      --bg-light: #eef3f8;
+      --text-dark: #2c3e50;
+      --text-light: #34495e;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #e6f0ff, #f3e5f5);
+      color: var(--text-dark);
+      overflow-x: hidden;
+    }
+
+    header {
+      background: var(--text-dark);
+      color: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+
+    header h1 {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      transition: 0.3s;
+    }
+
+    nav a:hover,
+    nav a.active {
+      background: rgba(255,255,255,0.15);
+    }
+
+    .logout-btn {
+      background: #e74c3c;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .logout-btn:hover {
+      background: #c0392b;
+    }
+
+    .profile {
+      position: relative;
+      display: inline-block;
+    }
+
+    .profile img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid white;
+    }
+
+    .profile-menu {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 55px;
+      background: #fff;
+      color: var(--text-dark);
+      min-width: 220px;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+      padding: 15px;
+      font-size: 14px;
+      z-index: 1000;
+      animation: fadeIn 0.3s ease forwards;
+    }
+
+    .profile:hover .profile-menu {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(-10px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    main {
+      max-width: 950px;
+      margin: 60px auto;
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(12px);
+      border-radius: 20px;
+      padding: 50px 60px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+      animation: slideUp 0.6s ease;
+    }
+
+    @keyframes slideUp {
+      from {opacity: 0; transform: translateY(30px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    h2 {
+      color: var(--accent);
+      margin-bottom: 10px;
+      font-size: 1.6rem;
+      position: relative;
+    }
+
+    h2::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -5px;
+      width: 50px;
+      height: 3px;
+      background: var(--accent);
+      border-radius: 2px;
+    }
+
+    p {
+      color: var(--text-light);
+      font-size: 16px;
+      line-height: 1.8;
+      margin-bottom: 20px;
+    }
+
+    .team-section ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 10px;
+    }
+
+    .team-section li {
+      background: #f0f4fa;
+      padding: 12px 18px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .team-section li:hover {
+      background: #e3eaf5;
+      transform: translateX(5px);
+    }
+
+    .vision-box {
+      background: #f8faff;
+      border-left: 5px solid var(--primary);
+      padding: 20px 25px;
+      border-radius: 12px;
+      margin-top: 25px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+    }
+
+    footer {
+      background: var(--text-dark);
+      color: white;
+      text-align: center;
+      padding: 15px;
+      margin-top: 60px;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+    }
+
+    @media (max-width: 768px) {
+      main {
+        width: 90%;
+        padding: 30px 25px;
+      }
+
+      nav {
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>SMART CITY DBMS</h1>
+    <nav>
+      <a href="{{ url_for('citizen_bp.index') }}">Home</a>
+      <a href="{{ url_for('citizen_bp.about') }}" class="active">About Us</a>
+      <a href="{{ url_for('citizen_bp.contact') }}">Contact</a>
+      <a href="{{ url_for('citizen_bp.citizen_login') }}" class="logout-btn">Logout</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="objective">
+      <h2>Project Objective</h2>
+      <p>
+        The <strong>Smart City Database Management System (DBMS)</strong> is designed to streamline and digitize 
+        essential civic services — from managing citizen data to handling utilities, requests, and emergency systems 
+        — all integrated into one intelligent urban platform.
+      </p>
+    </section>
+
+    <section class="team-section">
+      <h2>Team Members</h2>
+      <ul>
+        <li>👩‍💻 <strong>Menni Hima Harika</strong></li>
+        <li>👩‍💻 <strong>Siri Sahasra</strong></li>
+        <li>👩‍💻 <strong>Bhavika Jaiswal</strong></li>
+      </ul>
+    </section>
+
+    <section class="vision-section">
+      <h2>Our Vision</h2>
+      <div class="vision-box">
+        <p>
+          Our vision is to build a data-driven, transparent, and citizen-friendly ecosystem that empowers city administrators 
+          and residents alike. We aim to integrate technology and governance to create a safer, smarter, and more sustainable city 
+          for future generations.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    &copy; 2025 Smart City DBMS | Designed by Team Smart Innovators
+  </footer>
+</body>
+</html>

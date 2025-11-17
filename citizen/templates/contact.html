@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Contact Us | Smart City DBMS</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: hsl(260, 80%, 65%);
+      --accent: hsl(320, 85%, 65%);
+      --foreground: hsl(240, 40%, 15%);
+      --background: hsl(250, 100%, 97%);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: linear-gradient(135deg, #dcefff, #f3e5f5);
+      padding: 50px 0;
+    }
+
+    .contact-container {
+      background: var(--background);
+      padding: 3rem 4rem;
+      border-radius: 2rem;
+      width: 600px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+
+    .contact-container h1 {
+      color: var(--primary);
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    form {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    label {
+      font-weight: 500;
+      color: var(--foreground);
+      margin-bottom: 5px;
+    }
+
+    input, textarea {
+      padding: 12px 15px;
+      border-radius: 1rem;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+
+    input:focus, textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 10px rgba(138, 43, 226, 0.25);
+      outline: none;
+    }
+
+    button {
+      padding: 12px 40px;
+      background: var(--primary);
+      color: white;
+      font-weight: 600;
+      border-radius: 1.5rem;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      align-self: center;
+      margin-top: 10px;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(138, 43, 226, 0.3);
+    }
+
+    .flash-message {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+      padding: 10px 15px;
+      border-radius: 1rem;
+      margin-bottom: 15px;
+      width: 100%;
+      text-align: center;
+      font-weight: 500;
+    }
+
+    .messages-container {
+      margin-top: 30px;
+      flex-direction: column;
+      background: #fff;
+      border-radius: 1rem;
+      box-shadow: 0 15px 25px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-height: 300px;
+      overflow-y: auto;
+      padding: 1.5rem;
+      display: flex;
+    }
+
+    .message-block {
+      background: #f5f6ff;
+      border-radius: 1rem;
+      padding: 10px 15px;
+      margin-bottom: 10px;
+      color: #333;
+      font-size: 14px;
+    }
+
+    .message-date {
+      font-size: 12px;
+      color: gray;
+      margin-bottom: 4px;
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="contact-container" id="contact-box">
+    <h1>Contact Us</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash-message">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form id="contact-form" method="POST" action="{{ url_for('citizen_bp.contact') }}">
+      <label for="name">Name</label>
+      <input type="text" id="name" name="name" value="{{ user.name }}" readonly>
+
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" value="{{ user.email }}" required>
+
+      <label for="message">Message</label>
+      <textarea id="message" name="message" rows="4" required></textarea>
+
+      <button type="submit">Send Message</button>
+    </form>
+
+    <div class="messages-container">
+      {% for msg in messages %}
+        <div class="message-block">
+          <div class="message-date">{{ msg.created_at.strftime('%b %d, %Y %I:%M %p') }}</div>
+          <div>{{ msg.message }}</div>
+          {% if msg.reply %}
+            <div><strong>Reply:</strong> {{ msg.reply }}</div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+</body>
+</html>

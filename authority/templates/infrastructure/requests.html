@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+    body {
+        background: linear-gradient(135deg, #28313B, #485461);
+        background-attachment: fixed;
+    }
+
+    .glass-box {
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(8px);
+        border-radius: 12px;
+        padding: 25px;
+        color: white;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+    }
+
+    th {
+        background: rgba(255,255,255,0.1);
+        color: white;
+    }
+</style>
+
+<div class="container mt-4 glass-box">
+
+    <h2 class="text-center mb-4">📄 Infrastructure Requests</h2>
+
+    <!-- Filters -->
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <input id="searchReq" class="form-control" placeholder="Search requests...">
+        </div>
+        <div class="col-md-3">
+            <select class="form-select" id="filterStatus">
+                <option value="">Filter by Status</option>
+                <option>Pending</option>
+                <option>In Progress</option>
+                <option>Resolved</option>
+            </select>
+        </div>
+    </div>
+
+    <table class="table table-hover table-bordered" id="reqTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Citizen</th>
+                <th>Description</th>
+                <th>Location</th>
+                <th>Status</th>
+                <th>Time</th>
+                <th>Update</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for r in requests %}
+            <tr>
+                <td>{{ r.id }}</td>
+                <td>{{ r.citizen_name }}</td>
+                <td>{{ r.description }}</td>
+                <td>{{ r.location }}</td>
+                <td>{{ r.status }}</td>
+                <td>{{ r.timestamp }}</td>
+
+                <td>
+                    <a href="{{ url_for('authority_bp.update_infra_request', req_id=r.id, new_status='Pending') }}"
+                       class="btn btn-warning btn-sm">Pending</a>
+
+                    <a href="{{ url_for('authority_bp.update_infra_request', req_id=r.id, new_status='In Progress') }}"
+                       class="btn btn-primary btn-sm">In Progress</a>
+
+                    <a href="{{ url_for('authority_bp.update_infra_request', req_id=r.id, new_status='Resolved') }}"
+                       class="btn btn-success btn-sm">Resolved</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
+
+</div>
+
+<script>
+document.getElementById("searchReq").addEventListener("keyup", filterReq);
+document.getElementById("filterStatus").addEventListener("change", filterReq);
+
+function filterReq() {
+    let search = document.getElementById("searchReq").value.toLowerCase();
+    let status = document.getElementById("filterStatus").value;
+    let rows = document.querySelectorAll("#reqTable tbody tr");
+
+    rows.forEach(r => {
+        let text = r.innerText.toLowerCase();
+        let s = r.children[4].innerText;
+        r.style.display = (text.includes(search) && (status === "" || s.includes(status))) ? "" : "none";
+    });
+}
+</script>
+
+{% endblock %}

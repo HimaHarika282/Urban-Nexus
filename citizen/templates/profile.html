@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>My Profile</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: radial-gradient(circle at 20% 30%, #a1e3ff 10%, #6a11cb 100%);
+  min-height: 100vh;
+  color: #222;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: bgMotion 18s ease-in-out infinite alternate;
+  padding: 30px 0;
+}
+
+@keyframes bgMotion {
+  0% { background-position: 0% 80%; }
+  100% { background-position: 100% 20%; }
+}
+
+h2 {
+  font-size: 42px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  background: linear-gradient(90deg,#2575fc,#ff7f50);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 40px;
+}
+
+.profile-wrapper {
+  width: 95%;
+  max-width: 1250px;
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(12px);
+  border-radius: 25px;
+  box-shadow: 0 10px 50px rgba(0, 0, 0, 0.25);
+  padding: 50px 70px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 70px;
+  width: 100%;
+}
+
+/* Avatar section */
+.avatar-section {
+  text-align: center;
+  flex: 0 0 260px;
+  position: relative;
+}
+
+.profile-img, .profile-placeholder {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  border: 4px solid #6a11cb;
+  object-fit: cover;
+  box-shadow: 0 6px 25px rgba(0,0,0,0.25);
+  transition: 0.3s;
+  cursor: pointer;
+  display: block;
+  margin: auto;
+}
+
+.profile-img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 35px rgba(0,0,0,0.3);
+}
+
+.profile-placeholder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 80px;
+  color: #fff;
+  background: #8a4df3; /* lighter vibrant purple */
+  border: 4px solid #6a11cb;
+  border-radius: 50%;
+  width: 180px;
+  height: 180px;
+}
+
+.avatar-options {
+  display: none;
+  position: absolute;
+  top: 200px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+  z-index: 5;
+  min-width: 180px;
+}
+
+.avatar-options button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  font-size: 15px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+  transition: background 0.2s;
+}
+
+.avatar-options button:hover {
+  background: #f3f3f3;
+}
+
+.avatar-options button:last-child {
+  border-bottom: none;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+/* Info Sections Layout */
+.info-sections {
+  display: flex;
+  justify-content: space-between;
+  gap: 35px;
+  flex-wrap: wrap;
+  max-width: 800px;
+  flex: 1;
+}
+
+.info-column {
+  flex: 1;
+  min-width: 350px;
+}
+
+.section-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #ff7f50;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+}
+
+.form-group {
+  margin-bottom: 18px;
+}
+
+label {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+input, select {
+  width: 100%;
+  padding: 12px 15px;
+  border-radius: 12px;
+  border: 1px solid #b3b3b3;
+  font-size: 16px;
+  background: #f8fafc;
+}
+
+input[readonly] {
+  background-color: #e7efff;
+  cursor: not-allowed;
+}
+
+input:focus {
+  outline: none;
+  border-color: #2575fc;
+  box-shadow: 0 0 0 3px rgba(37,117,252,0.2);
+}
+
+.action-btn {
+  display: block;
+  background: linear-gradient(90deg, #2575fc 40%, #ff7f50 100%);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 17px;
+  padding: 14px 45px;
+  cursor: pointer;
+  margin: 25px auto 10px auto;
+  transition: 0.3s;
+}
+
+.action-btn:hover {
+  background: linear-gradient(90deg, #ff7f50 40%, #2575fc 100%);
+}
+
+/* Circular view modal */
+.avatar-modal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.75);
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.avatar-modal img {
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 5px solid white;
+  box-shadow: 0 0 35px rgba(255,255,255,0.4);
+}
+
+@media (max-width: 900px) {
+  .profile-wrapper {
+    padding: 35px 25px;
+  }
+  .info-sections {
+    flex-direction: column;
+    max-width: 100%;
+  }
+  .avatar-section {
+    margin-bottom: 25px;
+  }
+}
+</style>
+</head>
+<body>
+<h2>My Profile</h2>
+<div class="profile-wrapper">
+<form method="POST" enctype="multipart/form-data" class="profile-container">
+
+  <!-- Avatar Section -->
+  <div class="avatar-section">
+    {% if user.avatar %}
+      <img src="{{ avatar_url }}" alt="Profile Photo" class="profile-img" id="avatarPreview" onclick="toggleAvatarOptions()">
+    {% else %}
+      <div class="profile-placeholder" id="avatarPreview">👤</div>
+      <label for="avatarUpload" class="img-upload-label" style="cursor:pointer; background:linear-gradient(90deg, #2575fc, #ff7f50); color:white; padding:10px 18px; border-radius:12px; margin-top:20px; display:block;">
+        Add Photo
+      </label>
+    {% endif %}
+    <input type="file" id="avatarUpload" name="avatar" accept="image/*" onchange="previewAvatar(event)">
+    
+    {% if user.avatar %}
+    <input type="checkbox" name="delete_avatar" id="delete_avatar" style="display:none;">
+    <div class="avatar-options" id="avatarOptions">
+      <button type="button" onclick="viewAvatar()">View Photo</button>
+      <button type="button" onclick="document.getElementById('avatarUpload').click();">Change Photo</button>
+      <button type="button" onclick="deleteAvatar()">Delete Photo</button>
+      <button type="button" onclick="toggleAvatarOptions()">Close</button>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Profile Info -->
+  <div class="info-sections">
+    <div class="info-column">
+      <div class="section-title">Personal Info</div>
+
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" name="name" value="{{ user.name }}" readonly>
+      </div>
+
+      <div class="form-group">
+        <label>Date of Birth</label>
+        <input type="date" name="dob" value="{{ user.date_of_birth }}" readonly>
+      </div>
+
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" name="email" value="{{ user.email }}" readonly>
+      </div>
+
+      <div class="form-group">
+        <label>Phone</label>
+        <input type="text" name="phone_no" value="{{ user.phone_no }}" readonly>
+      </div>
+    </div>
+
+    <div class="info-column">
+      <div class="section-title">Address & IDs</div>
+
+      <div class="form-group">
+        <label>Address</label>
+        <input type="text" name="address" value="{{ user.address }}" readonly>
+      </div>
+
+      <div class="form-group">
+        <label>Zone ID</label>
+        <input type="text" name="zone_id" value="{{ user.zone_id }}" readonly>
+      </div>
+
+      <div class="form-group">
+        <label>Citizen ID</label>
+        <input type="text" name="citizen_id" value="{{ user.citizen_id }}" readonly>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <button type="button" class="action-btn" id="updateBtn" onclick="enableProfileEdit()">Update Profile</button>
+  <button type="submit" class="action-btn" id="saveBtn" style="display:none;">Save Changes</button>
+</form>
+</div>
+
+<!-- Circular view modal -->
+<div class="avatar-modal" id="avatarModal" onclick="closeAvatarModal()">
+  <img src="{{ avatar_url }}" alt="Profile Photo">
+</div>
+
+<script>
+function toggleAvatarOptions() {
+  const opts = document.getElementById('avatarOptions');
+  if (opts) opts.style.display = opts.style.display === 'block' ? 'none' : 'block';
+}
+
+function viewAvatar() {
+  document.getElementById('avatarModal').style.display = 'flex';
+  toggleAvatarOptions();
+}
+
+function closeAvatarModal() {
+  document.getElementById('avatarModal').style.display = 'none';
+}
+
+function previewAvatar(event) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    const preview = document.getElementById('avatarPreview');
+    if(preview.classList.contains('profile-placeholder')) {
+      preview.classList.remove('profile-placeholder');
+      preview.classList.add('profile-img');
+      // remove the Add Photo label when image is added
+      const addBtn = document.querySelector('.img-upload-label');
+      if(addBtn) addBtn.style.display = 'none';
+    }
+    preview.src = e.target.result;
+    document.getElementById('saveBtn').style.display = 'block';
+  };
+  reader.readAsDataURL(event.target.files[0]);
+}
+
+function deleteAvatar() {
+  if(confirm("Are you sure you want to delete your photo?")) {
+    document.getElementById('delete_avatar').checked = true;
+    const preview = document.getElementById('avatarPreview');
+    preview.src = '';
+    preview.classList.remove('profile-img');
+    preview.classList.add('profile-placeholder');
+    preview.innerHTML = '👤';
+    // show the Add Photo button again
+    const addBtn = document.querySelector('.img-upload-label');
+    if(addBtn) addBtn.style.display = 'block';
+    document.getElementById('saveBtn').style.display = 'block';
+    toggleAvatarOptions();
+  }
+}
+
+function enableProfileEdit() {
+  const allInputs = document.querySelectorAll('.info-column input');
+  allInputs.forEach(inp => inp.removeAttribute('readonly'));
+  document.getElementById('updateBtn').style.display = 'none';
+  document.getElementById('saveBtn').style.display = 'block';
+}
+</script>
+</body>
+</html>

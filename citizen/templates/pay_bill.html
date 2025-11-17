@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pay Electricity Bill</title>
+
+    <!-- Internal CSS -->
+    <style>
+        body {
+            background: #f2f4f7;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            width: 50%;
+            margin: 60px auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            padding: 25px;
+        }
+
+        .card-header {
+            background: #007bff;
+            color: white;
+            padding: 12px;
+            font-size: 22px;
+            font-weight: bold;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        p {
+            font-size: 18px;
+            margin: 8px 0;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            font-size: 18px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .btn-pay {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-pay:hover {
+            background: #218838;
+        }
+
+        .status-paid {
+            color: green;
+            font-weight: bold;
+        }
+
+        .status-unpaid {
+            color: red;
+            font-weight: bold;
+        }
+
+        .alert {
+            text-align: center;
+            font-size: 18px;
+            padding: 12px;
+            color: #0c5460;
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            border-radius: 8px;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <div class="card">
+
+        <div class="card-header">
+            Pay Electricity Bill
+        </div>
+
+        <div class="card-body">
+
+            <!-- Bill Details -->
+            <p><strong>Bill ID:</strong> {{ bill.bill_id }}</p>
+            <p><strong>Billing Month:</strong> {{ bill.billing_month }}</p>
+            <p><strong>Units Consumed:</strong> {{ bill.units }}</p>
+            <p><strong>Total Amount:</strong> ₹ {{ bill.BillAmount }}</p>
+
+            <p><strong>Status:</strong>
+                {% if bill.status == 'Paid' %}
+                    <span class="status-paid">Paid</span>
+                {% else %}
+                    <span class="status-unpaid">Unpaid</span>
+                {% endif %}
+            </p>
+
+            <hr>
+
+            {% if bill.status != 'Paid' %}
+            
+            <!-- Payment Button -->
+            <form method="POST" action="{{ url_for('citizen_bp.confirm_payment', bill_id=bill.bill_id) }}">
+                <button class="btn btn-pay">
+                    Confirm Pay ₹ {{ bill.BillAmount }}
+                </button>
+            </form>
+
+            {% else %}
+            <div class="alert">
+                ✔ This bill is already paid.
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+  /* Background with overlay */
+  body {
+    background: url("https://images.unsplash.com/photo-1495433324511-bf8e92934d90?auto=format&fit=crop&w=1600&q=80") no-repeat center center fixed;
+    background-size: cover;
+    position: relative;
+    color: white;
+    font-family: "Poppins", sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Dark overlay to improve text visibility */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(3px);
+    z-index: -1;
+  }
+
+  .dashboard-container {
+    text-align: center;
+    padding: 80px 20px;
+  }
+
+  .dashboard-title {
+    font-size: 2.8rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+
+  .dashboard-subtitle {
+    color: #ddd;
+    font-size: 1.2rem;
+    margin-bottom: 50px;
+  }
+
+  .dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    gap: 30px;
+    justify-content: center;
+    align-items: center;
+    padding: 0 10%;
+  }
+
+  .dashboard-card {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 35px 25px;
+    box-shadow: 0 6px 25px rgba(0,0,0,0.4);
+    transition: transform 0.3s, background 0.3s, box-shadow 0.3s;
+    text-align: center;
+    backdrop-filter: blur(4px);
+  }
+
+  .dashboard-card:hover {
+    transform: translateY(-8px);
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+  }
+
+  .dashboard-card i {
+    font-size: 3rem;
+    color: #00e5ff;
+    margin-bottom: 15px;
+  }
+
+  .dashboard-card h3 {
+    color: #fff;
+    margin-bottom: 10px;
+  }
+
+  .dashboard-card p {
+    color: #ccc;
+    font-size: 0.95rem;
+    margin-bottom: 15px;
+  }
+
+  .dashboard-card a {
+    color: #00e5ff;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .dashboard-card a:hover {
+    text-decoration: underline;
+  }
+</style>
+
+<div class="dashboard-container">
+  <h1 class="dashboard-title">👮 Welcome, {{ officer.username }}!</h1>
+  <p class="dashboard-subtitle">
+    Department: <strong>{{ officer.department.name }}</strong> | Urban Nexus Command Portal
+  </p>
+
+  <div class="dashboard-cards">
+    <div class="dashboard-card">
+      <i class="fas fa-tasks"></i>
+      <h3>View Requests</h3>
+      <p>See and manage citizen requests assigned to your department.</p>
+      <a href="{{ url_for('authority_bp.police_requests') }}">Go to Requests →</a>
+    </div>
+
+    <div class="dashboard-card">
+      <i class="fas fa-building"></i>
+      <h3>Police Stations</h3>
+      <p>View all stations, their in-charges, and available vehicles.</p>
+      <a href="{{ url_for('authority_bp.police_stations') }}">View Stations →</a>
+    </div>
+
+    <div class="dashboard-card">
+      <i class="fas fa-exclamation-triangle"></i>
+      <h3>Emergency Requests</h3>
+      <p>View all emergency requests, their locations, and statuses.</p>
+      <a href="{{ url_for('authority_bp.police_emergency') }}" style="background-color: #b0373b;">View Emergencies →</a>
+    </div>
+  </div>
+</div>
+
+<!-- FontAwesome Icons -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+{% endblock %}

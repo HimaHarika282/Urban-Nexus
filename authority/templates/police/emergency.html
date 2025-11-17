@@ -1,0 +1,181 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+/* Background */
+.police-bg {
+    background: linear-gradient(135deg, #003049, #1d3557, #264653);
+    padding: 30px;
+    border-radius: 12px;
+    color: white;
+}
+
+/* Glass box */
+.glass-box {
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0px 6px 20px rgba(0,0,0,0.35);
+}
+
+/* Table header */
+.table-header {
+    background: #003049 !important;
+    color: white;
+    font-weight: 600;
+}
+
+/* Hover effect */
+tbody tr:hover {
+    background: rgba(255,255,255,0.1) !important;
+}
+
+/* Filter box */
+.filter-box {
+    background: rgba(255,255,255,0.18);
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+/* Status colors */
+.status-blue { color: #003049; font-weight: 600; }
+.status-yellow { color: #f4a261; font-weight: 600; }
+.status-green { color: #2a9d8f; font-weight: 600; }
+
+</style>
+
+
+<div class="container police-bg mt-4">
+
+    <h2 class="text-center mb-4 fw-bold" style="text-shadow: 0 0 8px rgba(0,0,0,0.4);">
+        🚨 Police Emergency Requests
+    </h2>
+
+    <!-- Filters -->
+    <div class="filter-box">
+        <div class="row">
+            <div class="col-md-6 mb-2">
+                <input id="searchEmergency" class="form-control"
+                       placeholder="Search by citizen, location, description...">
+            </div>
+
+            <div class="col-md-3 mb-2">
+                <select id="statusFilter" class="form-select">
+                    <option value="">Filter Status</option>
+                    <option value="Pending">Pending</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Resolved">Resolved</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="glass-box table-responsive">
+        <table class="table table-hover text-white" id="emergencyTable">
+            <thead class="table-header">
+                <tr>
+                    <th onclick="sortTable(0)">ID</th>
+                    <th onclick="sortTable(1)">Citizen</th>
+                    <th onclick="sortTable(2)">Location</th>
+                    <th>Description</th>
+                    <th onclick="sortTable(4)">Time</th>
+                    <th onclick="sortTable(5)">Status</th>
+                    <th>Update</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for req in emergencies %}
+                <tr>
+                    <td>{{ req.id }}</td>
+                    <td>{{ req.citizen_name }}</td>
+                    <td>{{ req.location }}</td>
+                    <td>{{ req.description }}</td>
+                    <td>{{ req.timestamp }}</td>
+
+                    <td>
+                        {% if req.status == "Pending" %}
+                            <span class="status-yellow">Pending</span>
+                        {% elif req.status == "In Progress" %}
+                            <span class="status-blue">In Progress</span>
+                        {% else %}
+                            <span class="status-green">Resolved</span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        <a href="{{ url_for('authority_bp.update_emergency_request', req_id=req.id, status='Pending') }}"
+                           class="btn btn-warning btn-sm mb-1">Pending</a>
+
+                        <a href="{{ url_for('authority_bp.update_emergency_request', req_id=req.id, status='In Progress') }}"
+                           class="btn btn-primary btn-sm mb-1">In Progress</a>
+
+                        <a href="{{ url_for('authority_bp.update_emergency_request', req_id=req.id, status='Resolved') }}"
+                           class="btn btn-success btn-sm">Resolved</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script>
+// SEARCH + FILTER
+function filterEmergency() {
+    let search = document.getElementById("searchEmergency").value.toLowerCase();
+    let statusValue = document.getElementById("statusFilter").value;
+    let rows = document.querySelectorAll("#emergencyTable tbody tr");
+
+    rows.forEach(row => {
+        let rowText = row.innerText.toLowerCase();
+        let rowStatus = row.children[5].innerText;
+
+        row.style.display =
+            (rowText.includes(search) && (statusValue === "" || rowStatus.includes(statusValue)))
+            ? "" : "none";
+    });
+}
+
+document.getElementById("searchEmergency").addEventListener("keyup", filterEmergency);
+document.getElementById("statusFilter").addEventListener("change", filterEmergency);
+
+
+// SORTING
+function sortTable(colIndex) {
+    let table = document.getElementById("emergencyTable");
+    let switching = true;
+    let dir = "asc";
+
+    while (switching) {
+        switching = false;
+        let rows = table.rows;
+
+        for (let i = 1; i < rows.length - 1; i++) {
+            let x = rows[i].getElementsByTagName("TD")[colIndex].innerText.toLowerCase();
+            let y = rows[i + 1].getElementsByTagName("TD")[colIndex].innerText.toLowerCase();
+            let shouldSwitch = false;
+
+            if ((dir === "asc" && x > y) || (dir === "desc" && x < y)) {
+                shouldSwitch = true;
+                break;
+            }
+        }
+
+        if (shouldSwitch) {
+            rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+            switching = true;
+        }
+        else if (dir === "asc") {
+            dir = "desc";
+            switching = true;
+        }
+    }
+}
+</script>
+
+{% endblock %}

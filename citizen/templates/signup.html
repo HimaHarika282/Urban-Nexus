@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Citizen Signup</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+
+    body {
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      
+      background-image: url("https://as2.ftcdn.net/jpg/02/07/21/99/1000_F_207219935_nM8eFavL645bgIrfHMtJq2gBXoV1Chap.jpg");
+      background-size: 200% 200%;
+      animation: gradientShift 30s ease infinite;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .container {
+      width: 95%;
+      max-width: 1450px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .left img {
+      width: 720px;
+      height: auto;
+      filter: drop-shadow(0px 15px 30px rgba(0,0,0,0.25));
+      margin-left: 70px;
+    }
+
+    .right-card {
+      width: 580px;
+      height: 550px;
+      padding: 40px 45px;
+      overflow-y: auto;
+      border-radius: 25px;
+
+      background: rgba(255, 255, 255, 0.22);
+      backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+
+      color: white;
+    }
+
+    .right-card::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .right-card::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.4);
+      border-radius: 10px;
+    }
+
+    .right-card h1 {
+      font-size: 32px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .right-card p {
+      margin-top: 5px;
+      margin-bottom: 30px;
+      font-size: 15px;
+      opacity: 0.85;
+    }
+
+    .form-group {
+      margin-bottom: 22px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group label {
+      font-size: 14px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.9);
+      margin-bottom: 5px;
+    }
+
+    .form-group input {
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid rgba(255,255,255,0.6);
+      padding: 10px 5px;
+      color: white;
+      font-size: 15px;
+      outline: none;
+    }
+
+    .form-group input::placeholder {
+      color: rgba(255,255,255,0.55);
+    }
+
+    .signup-btn {
+      width: 100%;
+      padding: 14px 0;
+      background: #31c35a;
+      border: none;
+      margin-top: 10px;
+      border-radius: 10px;
+      font-size: 18px;
+      font-weight: 600;
+      color: white;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .signup-btn:hover {
+      background: #28a34d;
+    }
+
+    @media (max-width: 900px) {
+      body { overflow-y: auto; padding: 40px 0; }
+
+      .container {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .left img { width: 330px; }
+
+      .right-card {
+        width: 90%;
+        height: 500px;
+        margin-top: 30px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <!-- IMAGE INSERTED HERE -->
+    <div class="left">
+      
+    </div>
+
+    <!-- SIGNUP CARD -->
+    <div class="right-card">
+      <h1>Citizen Signup</h1>
+      <p>Become a part of our Urban Nexus Smart City</p>
+
+      <form method="POST">
+
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" name="name" placeholder="Enter full name" required />
+        </div>
+
+        <div class="form-group">
+          <label>Date of Birth</label>
+          <input type="date" name="dob" required />
+        </div>
+
+        <div class="form-group">
+          <label>Citizen ID</label>
+          <input type="number" name="citizen_id" placeholder="Enter citizen ID" required />
+        </div>
+
+        <div class="form-group">
+          <label>Zone ID</label>
+          <input type="number" name="zone_id" placeholder="Enter zone ID" required />
+        </div>
+
+        <div class="form-group">
+          <label>Address</label>
+          <input type="text" name="address" placeholder="Enter address" required />
+        </div>
+
+        <div class="form-group">
+          <label>Phone Number</label>
+          <input type="tel" name="phone" placeholder="10-digit number" pattern="[0-9]{10}" required />
+        </div>
+
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" name="email" placeholder="Enter email" required />
+        </div>
+
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" name="password" placeholder="Enter password" required />
+        </div>
+
+        <button class="signup-btn">Sign Up</button>
+
+      </form>
+    </div>
+  </div>
+</body>
+</html>

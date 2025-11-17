@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pay Gas Bill</title>
+
+    <style>
+        body {
+            background: #f2f4f7;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            width: 50%;
+            margin: 60px auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            padding: 25px;
+        }
+
+        .card-header {
+            background: #32bbaf;
+            color: white;
+            padding: 12px;
+            font-size: 22px;
+            font-weight: bold;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        p {
+            font-size: 18px;
+            margin: 8px 0;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            font-size: 18px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .btn-pay {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-pay:hover {
+            background: #218838;
+        }
+
+        .btn-disabled {
+            background: gray;
+            cursor: not-allowed;
+        }
+
+        .status-paid {
+            color: green;
+            font-weight: bold;
+        }
+
+        .status-unpaid {
+            color: red;
+            font-weight: bold;
+        }
+
+        .alert {
+            text-align: center;
+            font-size: 18px;
+            padding: 12px;
+            color: #0c5460;
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <div class="card">
+
+        <div class="card-header">
+            Pay Gas Bill
+        </div>
+
+        <div class="card-body">
+
+            <!-- Bill Details -->
+            <p><strong>Bill ID:</strong> {{ bill.gasbill_id }}</p>
+            <p><strong>Order Date:</strong> {{ bill.order_date }}</p>
+            <p><strong>Delivery Date:</strong> {{ bill.delivery_date if bill.delivery_date else 'Not delivered yet' }}</p>
+            <p><strong>Total Amount:</strong> ₹ {{ bill.billamount }}</p>
+            <p><strong>Status:</strong>
+                {% if bill.status == 'Paid' %}
+                    <span class="status-paid">Paid</span>
+                {% else %}
+                    <span class="status-unpaid">Unpaid</span>
+                {% endif %}
+            </p>
+
+            <p><strong>Your Wallet:</strong> ₹ {{ wallet.Amount }}</p>
+
+            <hr>
+
+            {% if bill.status != 'Paid' %}
+                {% if wallet.Amount >= bill.billamount %}
+                    <!-- Payment Button -->
+                    <form method="POST" action="{{ url_for('citizen_bp.confirm_gas_payment', gasbill_id=bill.gasbill_id) }}">
+                        <button class="btn btn-pay">
+                            Confirm Pay ₹ {{ bill.billamount }}
+                        </button>
+                    </form>
+                {% else %}
+                    <button class="btn btn-disabled" disabled>
+                        Insufficient Balance - Top up your wallet
+                    </button>
+                    <div class="alert">
+                        ⚠ You do not have enough balance to pay this bill.
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="alert">
+                    ✔ This bill is already paid.
+                </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2 class="text-center mb-4">🏥 Hospital Information</h2>
+
+    <!-- Search hospitals -->
+    <div class="row mb-4">
+        <div class="col-md-6 mx-auto">
+            <input id="searchHospital" class="form-control" placeholder="Search by name or location...">
+        </div>
+    </div>
+
+    <div class="row g-4" id="hospitalContainer">
+        {% for h in hospitals %}
+        <div class="col-md-4 hospital-card">
+            <div class="card shadow-lg border-primary">
+                <div class="card-body">
+                    <h4 class="card-title text-primary">{{ h.name }}</h4>
+
+                    <p><strong>📍 Location:</strong> {{ h.location }}</p>
+                    <p><strong>👨‍⚕ Available Staff:</strong> {{ h.available_staff }}</p>
+                    <p><strong>🚑 Available Ambulances:</strong> {{ h.available_ambulances }}</p>
+                    <p><strong>☎ Contact:</strong> {{ h.contact }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+<script>
+document.getElementById("searchHospital").addEventListener("keyup", () => {
+    let term = document.getElementById("searchHospital").value.toLowerCase();
+    let cards = document.querySelectorAll(".hospital-card");
+
+    cards.forEach(card => {
+        card.style.display = card.innerText.toLowerCase().includes(term) ? "" : "none";
+    });
+});
+</script>
+
+{% endblock %}

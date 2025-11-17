@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2 class="text-center mb-4">🏥 Hospital Requests</h2>
+
+    <!-- Search + Filter Row -->
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <input id="searchInput" class="form-control" placeholder="Search by name, location, description...">
+        </div>
+        <div class="col-md-3">
+            <select id="statusFilter" class="form-select">
+                <option value="">Filter by Status</option>
+                <option value="Pending">Pending</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Resolved">Resolved</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Requests Table -->
+    <div class="table-responsive">
+        <table class="table table-striped table-hover" id="requestTable">
+            <thead class="table-primary">
+                <tr>
+                    <th onclick="sortTable(0)">ID</th>
+                    <th onclick="sortTable(1)">Citizen</th>
+                    <th>Description</th>
+                    <th onclick="sortTable(3)">Location</th>
+                    <th onclick="sortTable(4)">Status</th>
+                    <th onclick="sortTable(5)">Time</th>
+                    <th>Update</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for r in requests %}
+                <tr>
+                    <td>{{ r.id }}</td>
+                    <td>{{ r.citizen_name }}</td>
+                    <td>{{ r.description }}</td>
+                    <td>{{ r.location }}</td>
+
+                    <!-- Colored Status Badge -->
+                    <td>
+                        {% if r.status == "Pending" %}
+                            <span class="badge bg-warning text-dark">Pending</span>
+                        {% elif r.status == "In Progress" %}
+                            <span class="badge bg-primary">In Progress</span>
+                        {% else %}
+                            <span class="badge bg-success">Resolved</span>
+                        {% endif %}
+                    </td>
+
+                    <td>{{ r.timestamp }}</td>
+
+                    <!-- UPDATE STATUS BUTTONS -->
+                    <td>
+                        <a href="{{ url_for('authority_bp.update_hospital_request', req_id=r.id, status='Pending') }}"
+                           class="btn btn-sm btn-warning text-dark mb-1">Pending</a>
+
+                        <a href="{{ url_for('authority_bp.update_hospital_request', req_id=r.id, status='In Progress') }}"
+                           class="btn btn-sm btn-primary mb-1">In Progress</a>
+
+                        <a href="{{ url_for('authority_bp.update_hospital_request', req_id=r.id, status='Resolved') }}"
+                           class="btn btn-sm btn-success mb-1">Resolved</a>
+                    </td>
+
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script>
+// SEARCH + FILTER
+document.getElementById("searchInput").addEventListener("keyup", filterTable);
+document.getElementById("statusFilter").addEventListener("change", filterTable);
+
+function filterTable() {
+    let searchValue = document.getElementById("searchInput").value.toLowerCase();
+    let statusValue = document.getElementById("statusFilter").value;
+    let rows = document.querySelectorAll("#requestTable tbody tr");
+
+    rows.forEach(row => {
+        let text = row.innerText.toLowerCase();
+        let status = row.children[4].innerText;
+
+        if (text.includes(searchValue) && (statusValue === "" || status.includes(statusValue))) {
+            row.style.display = "";
+        } else {
+            row.style.display = "none";
+        }
+    });
+}
+
+// SORTING
+function sortTable(n) {
+    let table = document.getElementById("requestTable");
+    let switching = true;
+    let dir = "asc";
+
+    while (switching) {
+        switching = false;
+        let rows = table.rows;
+
+        for (let i = 1; i < rows.length - 1; i++) {
+            let x = rows[i].getElementsByTagName("TD")[n];
+            let y = rows[i + 1].getElementsByTagName("TD")[n];
+            let shouldSwitch = false;
+
+            if ((dir === "asc" && x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) ||
+                (dir === "desc" && x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase())) {
+                shouldSwitch = true;
+                break;
+            }
+        }
+
+        if (shouldSwitch) {
+            rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+            switching = true;
+        } else {
+            if (dir === "asc") { dir = "desc"; switching = true; }
+        }
+    }
+}
+</script>
+
+{% endblock %}

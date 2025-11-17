@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+    /* New Greenish-Yellow Background */
+    body {
+        background: linear-gradient(135deg, #c0ff72, #a8e063, #8bc34a);
+        background-attachment: fixed;
+    }
+
+    /* Frosted container */
+    .gas-wrapper {
+        background: rgba(255, 255, 255, 0.2);
+        padding: 30px;
+        border-radius: 15px;
+        backdrop-filter: blur(8px);
+        max-width: 1100px;
+        margin: 30px auto;
+        box-shadow: 0 6px 25px rgba(0,0,0,0.25);
+    }
+
+    /* Title */
+    .gas-title {
+        color: #2e5500;
+        font-size: 2.1rem;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
+    /* Table */
+    #gasTable {
+        background: rgba(255,255,255,0.9);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    #gasTable thead {
+        background: #558b2f;   /* Deep green */
+        color: white;
+        font-size: 1.1rem;
+    }
+
+    #gasTable tbody tr:hover {
+        background: rgba(220,255,220,0.7);
+        transition: 0.2s ease-in-out;
+    }
+
+    /* Buttons */
+    .btn-status {
+        border-radius: 20px;
+        padding: 5px 12px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    /* Search/filter styling */
+    .gas-search-box, .gas-filter-box {
+        background: rgba(255,255,255,0.25);
+        padding: 10px 15px;
+        border-radius: 10px;
+        backdrop-filter: blur(6px);
+    }
+</style>
+
+
+<div class="gas-wrapper">
+    <h2 class="gas-title">🛢 Gas Department Requests</h2>
+
+    <!-- Search + Filter Row -->
+    <div class="row mb-3">
+        <div class="col-md-6 gas-search-box">
+            <input id="searchInput" class="form-control" placeholder="Search requests…">
+        </div>
+
+        <div class="col-md-3 gas-filter-box">
+            <select id="statusFilter" class="form-select">
+                <option value="">Filter by Status</option>
+                <option value="Pending">Pending</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Resolved">Resolved</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover" id="gasTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Citizen</th>
+                    <th>Description</th>
+                    <th>Location</th>
+                    <th>Status</th>
+                    <th>Time</th>
+                    <th>Update</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for r in requests %}
+                <tr>
+                    <td>{{ r.id }}</td>
+                    <td>{{ r.citizen_name }}</td>
+                    <td>{{ r.description }}</td>
+                    <td>{{ r.location }}</td>
+
+                    <td>
+                        {% if r.status == "Pending" %}
+                        <span class="badge bg-warning text-dark">Pending</span>
+                        {% elif r.status == "In Progress" %}
+                        <span class="badge bg-primary">In Progress</span>
+                        {% else %}
+                        <span class="badge bg-success">Resolved</span>
+                        {% endif %}
+                    </td>
+
+                    <td>{{ r.timestamp }}</td>
+
+                    <td>
+                        <a href="{{ url_for('authority_bp.update_gas_request', req_id=r.id, new_status='Pending') }}"
+                           class="btn btn-warning btn-sm btn-status mb-1">Pending</a>
+
+                        <a href="{{ url_for('authority_bp.update_gas_request', req_id=r.id, new_status='In Progress') }}"
+                           class="btn btn-primary btn-sm btn-status mb-1">In Progress</a>
+
+                        <a href="{{ url_for('authority_bp.update_gas_request', req_id=r.id, new_status='Resolved') }}"
+                           class="btn btn-success btn-sm btn-status">Resolved</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+
+</div>
+
+<script>
+document.getElementById("searchInput").addEventListener("keyup", filterTable);
+document.getElementById("statusFilter").addEventListener("change", filterTable);
+
+function filterTable() {
+    let search = document.getElementById("searchInput").value.toLowerCase();
+    let status = document.getElementById("statusFilter").value;
+
+    document.querySelectorAll("#gasTable tbody tr").forEach(row => {
+        let txt = row.innerText.toLowerCase();
+        let st = row.children[4].innerText;
+
+        row.style.display = (txt.includes(search) &&
+                            (status === "" || st.includes(status)))
+                            ? "" : "none";
+    });
+}
+</script>
+
+{% endblock %}

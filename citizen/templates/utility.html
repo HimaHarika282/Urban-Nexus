@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Utilities</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #c3cfe2, #f5f7fa);
+      overflow-x: hidden;
+    }
+
+   header {
+      background: #105a53;
+      color: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    header h1 {
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      margin: 0;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-size: 15px;
+      padding: 8px 14px;
+      border-radius: 6px;
+      transition: background 0.3s ease;
+    }
+
+    nav a:hover {
+      background: rgba(255,255,255,0.2);
+    }
+
+    .logout-btn {
+      background: #ff4d4d;
+      font-weight: bold;
+    }
+
+    .logout-btn:hover {
+      background: #d63031;
+    }
+
+    .profile {
+      position: relative;
+      display: inline-block;
+    }
+
+    .profile img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid white;
+    }
+
+    .profile-menu {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 50px;
+      background: white;
+      color: #2c3e50;
+      min-width: 220px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      padding: 15px;
+      font-size: 14px;
+      z-index: 1000;
+    }
+
+    .profile:hover .profile-menu {
+      display: block;
+    }
+
+    .dashboard {
+      display: flex;
+      height: calc(100vh - 70px);
+    }
+
+    .sidebar {
+      width: 220px;
+      background: #105a53;;
+      padding-top: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar a {
+      color: white;
+      text-decoration: none;
+      padding: 14px 20px;
+      display: block;
+      font-size: 15px;
+      border-left: 4px solid transparent;
+      transition: 0.3s ease;
+    }
+
+    .sidebar a:hover, .sidebar a.active {
+      background: rgba(255,255,255,0.15);
+      border-left: 4px solid #fff;
+    }
+
+    .content {
+      flex: 1;
+      padding: 60px 40px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 40px;
+      justify-items: center;
+      align-items: center;
+      background: linear-gradient(135deg, #f0f3fa, #e9effd);
+      overflow-y: auto;
+    }
+
+    .utility-card {
+      width: 320px;
+      height: 240px;
+      border-radius: 20px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+      display: flex;
+      position: relative;
+      overflow: hidden;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      text-decoration: none;
+      
+      position: relative;
+      transition: all 0.4s ease;
+      overflow: hidden;
+    }
+
+    .utility-card::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at center, rgba(255,255,255,0.4), transparent 70%);
+      transform: scale(0);
+      transition: transform 0.5s ease;
+      z-index: 0;
+    }
+
+
+
+    .utility-card:hover::before {
+      transform: scale(1);
+    }
+
+    .utility-card:hover {
+      transform: translateY(-10px) scale(1.05);
+      background: linear-gradient(135deg, #6a5acd, #3c8ce7);
+      color: white;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.25);
+    }
+
+    .utility-card h3 {
+  font-size: 28px;
+  margin: 10px 0 5px 0;
+  z-index: 1;
+  position: relative;
+  color: #ffffff; /* White text */
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.6); /* optional shadow for contrast */
+}
+
+.utility-card p {
+  font-size: 15px;
+  opacity: 0.9;
+  z-index: 1;
+  position: relative;
+  color: #ffffff; /* White text */
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.5); /* subtle shadow */
+}
+
+  </style>
+</head>
+<body>
+  <header>
+    <h1>URBAN NEXUS</h1>
+    <nav>
+      <a href="{{ url_for('citizen_bp.index') }}">Home</a>
+      <a href="{{ url_for('citizen_bp.about') }}">About Us</a>
+      <a href="{{ url_for('citizen_bp.contact') }}">Contact</a>
+      <a href="{{ url_for('citizen_bp.profile') }}" class="profile">
+      <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Profile">
+      </a>
+      <a href="{{ url_for('citizen_bp.citizen_login') }}" class="logout-btn">Logout</a>
+    </nav>
+  </header>
+
+  <div class="dashboard">
+    <aside class="sidebar">
+      <a href="{{ url_for('citizen_bp.properties') }}">Properties</a>
+      <a href="{{ url_for('citizen_bp.utility') }}" class="active">Utilities</a>
+      <a href="{{url_for('citizen_bp.citizen_requests')}}">Requests</a>
+      <a href="{{url_for('citizen_bp.emergency_requests')}}">Emergency</a>
+      <a href="{{ url_for('citizen_bp.transport') }}">Transport</a>
+    </aside>
+
+    <main class="content">
+     <a href="{{ url_for('citizen_bp.water') }}" class="utility-card water-card"
+      style="background-image: url('https://media.istockphoto.com/id/1253853268/photo/dark-blue-waves-in-the-water.jpg?s=2048x2048&w=is&k=20&c=Y6tiN_HiVmjIHVkLAmVNlmT_r660n6Raf6XLH1O5V84=')">
+        <h3>💧 Water</h3>
+        <p>Manage your water supply, usage, and billing.</p>
+    </a>
+
+       <a href="{{ url_for('citizen_bp.electricity') }}" class="utility-card"
+       style="background-image: url('https://media.istockphoto.com/id/1372200846/photo/electricity-transmission-towers-with-orange-glowing-wires-against-night-sky.jpg?s=2048x2048&w=is&k=20&c=CXTPGApI6QKoWqzI_87qOl2ac5OoTySgHfuj-AHLCto=')">
+          <h3>⚡ Electricity</h3>
+          <p>Track energy consumption and service details.</p>
+      </a>
+
+      <a href="{{ url_for('citizen_bp.gas') }}" class="utility-card"
+        style="background-image: url('https://images.unsplash.com/photo-1608174427965-06e78e2f29a9?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')">
+
+
+          <h3>🔥 Gas</h3>
+          <p>View gas connections and payment status easily.</p>
+      </a>
+    </main>
+  </div>
+</body>
+</html>

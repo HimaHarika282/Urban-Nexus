@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+/* --- Background: Soft dark-red gradient with subtle texture --- */
+.fire-bg {
+    background: linear-gradient(135deg, #811978, #81347d, #9b4e9f);
+    padding: 50px 20px;
+    border-radius: 12px;
+    color: white;
+}
+
+/* --- Glass Cards --- */
+.fire-card {
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(10px);
+    border-radius: 18px;
+    padding: 28px 20px;
+    height: 100%;
+    border: 1px solid rgba(255,255,255,0.25);
+    box-shadow: 0 5px 18px rgba(0,0,0,0.35);
+    transition: transform .3s ease, box-shadow .3s ease;
+}
+
+.fire-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.4);
+}
+
+/* --- Icons --- */
+.fire-icon {
+    font-size: 45px;
+    margin-bottom: 10px;
+    color: #ffddc1;
+    text-shadow: 0 0 10px rgba(255,50,0,0.8);
+}
+
+/* --- Titles --- */
+.fire-title {
+    font-size: 1.4rem;
+    font-weight: bold;
+}
+
+/* --- Buttons --- */
+.fire-btn {
+    background: #ffddc1;
+    color: #6b0009 !important;
+    padding: 8px 20px;
+    border-radius: 30px;
+    font-weight: 600;
+    margin-top: 10px;
+    border: none;
+    transition: .2s ease;
+}
+
+.fire-btn:hover {
+    background: #ffe9d5;
+}
+
+/* --- Page Title --- */
+.fire-heading {
+    font-size: 2rem;
+    font-weight: 800;
+    text-shadow: 0 3px 10px rgba(0,0,0,0.4);
+}
+</style>
+
+
+<div class="container fire-bg mt-4">
+
+    <h2 class="text-center mb-5 fire-heading">🔥 Fire Department Dashboard</h2>
+
+    <div class="row g-4">
+
+        <!-- Requests Card -->
+        <div class="col-md-3">
+            <div class="fire-card text-center">
+                <div class="fire-icon">📄</div>
+                <div class="fire-title">Requests</div>
+                <p>Manage all fire-related citizen requests.</p>
+                <a href="{{ url_for('authority_bp.fire_requests') }}" class="fire-btn">View</a>
+            </div>
+        </div>
+
+        <!-- Stations Card -->
+        <div class="col-md-3">
+            <div class="fire-card text-center">
+                <div class="fire-icon">🚒</div>
+                <div class="fire-title">Stations</div>
+                <p>See fire station details, units & locations.</p>
+                <a href="{{ url_for('authority_bp.fire_stations') }}" class="fire-btn">View</a>
+            </div>
+        </div>
+
+        <!-- Resources Card -->
+        <div class="col-md-3">
+            <div class="fire-card text-center">
+                <div class="fire-icon">🧯</div>
+                <div class="fire-title">Resources</div>
+                <p>Check available hydrants, trucks & equipment.</p>
+                <a href="{{ url_for('authority_bp.fire_resources') }}" class="fire-btn">View</a>
+            </div>
+        </div>
+
+        <!-- Emergency Requests Card -->
+        <div class="col-md-3">
+            <div class="fire-card text-center">
+                <div class="fire-icon">⚠</div>
+                <div class="fire-title">Emergency</div>
+                <p>Critical alerts requiring immediate response.</p>
+                <a href="{{ url_for('authority_bp.fire_emergency') }}" class="fire-btn">View</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

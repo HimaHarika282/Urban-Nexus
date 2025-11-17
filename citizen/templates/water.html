@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Water Supply Schedule</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    body { margin:0; font-family:Arial, sans-serif; background:#f5f6fa; }
+
+    header {
+      background: #105a53;
+      color: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+    header h1 { font-size:20px; margin:0; }
+    nav { display:flex; gap:20px; align-items:center; }
+    nav a { color:white; text-decoration:none; padding:8px 14px; border-radius:6px; transition:0.3s; }
+    nav a:hover { background:#34495e; }
+    .logout-btn { background:#e74c3c; font-weight:bold; }
+    .logout-btn:hover { background:#c0392b; }
+
+    .profile { position:relative; display:inline-block; }
+    .profile img { width:40px; height:40px; border-radius:50%; cursor:pointer; border:2px solid white; }
+    .profile-menu { display:none; position:absolute; right:0; top:50px; background:white; color:#2c3e50; min-width:220px; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.2); padding:15px; font-size:14px; z-index:1000; }
+    .profile-menu p { margin:8px 0; }
+    .profile:hover .profile-menu { display:block; }
+
+    .dashboard { display:flex; height: calc(100vh - 60px); }
+    .sidebar {
+      width: 220px;
+      background: #105a53;
+      padding-top: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+    .sidebar a { color:white; text-decoration:none; padding:12px 20px; display:block; transition:0.3s; }
+    .sidebar a:hover, .sidebar a.active { background:#2c3e50; }
+
+    .content { flex:1; padding:30px; overflow-x:auto; }
+    .content h2 { margin-top:0; font-size:28px; color:#2c3e50; }
+
+    table { width:100%; border-collapse: collapse; margin-top:20px; background:white; border-radius:8px; overflow:hidden; box-shadow:0 4px 10px rgba(0,0,0,0.1); }
+    table th, table td { padding:12px; text-align:left; border-bottom:1px solid #ddd; }
+    table th { background:#2c3e50; color:white; }
+    table tr:hover { background:#f2f2f2; }
+
+    @media (max-width: 900px) {
+      .content h2 { font-size:22px; }
+      table th, table td { font-size:13px; padding:10px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>URBAN NEXUS</h1>
+    <nav>
+      <a href="{{ url_for('citizen_bp.index') }}">Home</a>
+      <a href="{{ url_for('citizen_bp.about') }}">About Us</a>
+      <a href="{{ url_for('citizen_bp.contact') }}">Contact</a>
+      <a href="{{ url_for('citizen_bp.profile') }}" class="profile">
+        <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Profile">
+      </a>
+      <a href="{{ url_for('citizen_bp.citizen_login') }}" class="logout-btn">Logout</a>
+    </nav>
+  </header>
+
+  <div class="dashboard">
+    <aside class="sidebar">
+      <a href="{{ url_for('citizen_bp.properties') }}">Properties</a>
+      <a href="{{ url_for('citizen_bp.utility') }}">Utilities</a>
+      <a href="{{url_for('citizen_bp.citizen_requests')}}">Requests</a>
+      <a href="{{url_for('citizen_bp.emergency_requests')}}">Emergency</a>
+      <a href="{{ url_for('citizen_bp.transport') }}">Transport</a>
+    </aside>
+
+    <main class="content">
+      <h2>Water Supply Schedule</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Area</th>
+            <th>Supply Days</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in schedule_data %}
+          <tr>
+            <td>{{ row.area }}</td>
+            <td>{{ row.supply_days }}</td>
+            <td>{{ row.start_time }}</td>
+            <td>{{ row.end_time }}</td>
+            <td>{{ row.notes }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </main>
+  </div>
+</body>
+</html>

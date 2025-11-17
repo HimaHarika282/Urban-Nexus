@@ -1,0 +1,203 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+/* Background */
+.fire-emergency-bg {
+    background: linear-gradient(135deg, #811978, #81347d, #9b4e9f);
+    padding: 35px;
+    border-radius: 12px;
+    color: white;
+}
+
+/* Table container */
+.glass-box {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.35);
+}
+
+/* Table Header */
+.table-header {
+    background: #e10f86 !important;
+    color: white;
+}
+
+/* Status badges */
+.status-badge {
+    font-weight: 700;
+    padding: 5px 10px;
+    border-radius: 8px;
+}
+
+.status-pending {
+    background: #ffcc00;
+    color: #663d00;
+}
+
+.status-progress {
+    background: #007bff;
+    color: white;
+}
+
+.status-resolved {
+    background: #00b33c;
+    color: white;
+}
+
+/* Buttons */
+.update-btn {
+    border-radius: 25px;
+    padding: 5px 12px;
+    font-weight: 600;
+}
+
+/* Search + filter bar */
+.filter-box {
+    background: rgba(255,255,255,0.18);
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+</style>
+
+
+<div class="container fire-emergency-bg mt-4">
+
+    <h2 class="text-center mb-4 fw-bold" style="text-shadow: 0px 0px 10px rgba(0,0,0,0.4);">
+        🚨 Fire Emergency Requests
+    </h2>
+
+    <!-- SEARCH + FILTER -->
+    <div class="filter-box">
+        <div class="row">
+            <div class="col-md-6 mb-2">
+                <input id="searchEmergency" class="form-control" placeholder="Search by citizen, location, description...">
+            </div>
+
+            <div class="col-md-3 mb-2">
+                <select id="statusEmergency" class="form-select">
+                    <option value="">Filter by Status</option>
+                    <option value="Pending">Pending</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Resolved">Resolved</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="glass-box table-responsive">
+        <table class="table table-hover text-white align-middle" id="emergencyTable">
+            <thead class="table-header">
+                <tr>
+                    <th onclick="sortTable(0)">ID</th>
+                    <th onclick="sortTable(1)">Citizen</th>
+                    <th onclick="sortTable(2)">Location</th>
+                    <th>Description</th>
+                    <th onclick="sortTable(4)">Status</th>
+                    <th onclick="sortTable(5)">Time</th>
+                    <th>Update</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for e in emergencies %}
+                <tr>
+                    <td>{{ e.id }}</td>
+                    <td>{{ e.citizen_name }}</td>
+                    <td>{{ e.location }}</td>
+                    <td>{{ e.description }}</td>
+
+                    <td>
+                        {% if e.status == "Pending" %}
+                            <span class="status-badge status-pending">Pending</span>
+                        {% elif e.status == "In Progress" %}
+                            <span class="status-badge status-progress">In Progress</span>
+                        {% else %}
+                            <span class="status-badge status-resolved">Resolved</span>
+                        {% endif %}
+                    </td>
+
+                    <td>{{ e.timestamp }}</td>
+
+                    <td>
+                        <a href="{{ url_for('authority_bp.update_fire_emergency', req_id=e.id, new_status='Pending') }}"
+                           class="btn btn-warning btn-sm update-btn mb-1">Pending</a>
+
+                        <a href="{{ url_for('authority_bp.update_fire_emergency', req_id=e.id, new_status='In Progress') }}"
+                           class="btn btn-primary btn-sm update-btn mb-1">In Progress</a>
+
+                        <a href="{{ url_for('authority_bp.update_fire_emergency', req_id=e.id, new_status='Resolved') }}"
+                           class="btn btn-success btn-sm update-btn">Resolved</a>
+                    </td>
+
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+
+<!-- FILTER + SEARCH + SORT SCRIPT -->
+<script>
+// SEARCH + STATUS FILTER
+function filterEmergency() {
+    let search = document.getElementById("searchEmergency").value.toLowerCase();
+    let status = document.getElementById("statusEmergency").value;
+    let rows = document.querySelectorAll("#emergencyTable tbody tr");
+
+    rows.forEach(row => {
+        let text = row.innerText.toLowerCase();
+        let rowStatus = row.children[4].innerText;
+
+        if (text.includes(search) && (status === "" || rowStatus.includes(status))) {
+            row.style.display = "";
+        } else {
+            row.style.display = "none";
+        }
+    });
+}
+
+document.getElementById("searchEmergency").addEventListener("keyup", filterEmergency);
+document.getElementById("statusEmergency").addEventListener("change", filterEmergency);
+
+
+// SORTING LOGIC
+function sortTable(n) {
+    const table = document.getElementById("emergencyTable");
+    let switching = true;
+    let direction = "asc";
+
+    while (switching) {
+        switching = false;
+        let rows = table.rows;
+
+        for (let i = 1; i < rows.length - 1; i++) {
+            let shouldSwitch = false;
+            let x = rows[i].getElementsByTagName("TD")[n].innerText.toLowerCase();
+            let y = rows[i + 1].getElementsByTagName("TD")[n].innerText.toLowerCase();
+
+            if ((direction === "asc" && x > y) || (direction === "desc" && x < y)) {
+                shouldSwitch = true;
+                break;
+            }
+        }
+
+        if (shouldSwitch) {
+            rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+            switching = true;
+        } 
+        else if (direction === "asc") {
+            direction = "desc";
+            switching = true;
+        }
+    }
+}
+</script>
+
+{% endblock %}

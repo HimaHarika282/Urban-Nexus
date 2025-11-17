@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+/* Background */
+.station-bg {
+    background: linear-gradient(135deg, #811978, #81347d, #9b4e9f);
+    padding: 35px;
+    border-radius: 12px;
+    color: white;
+}
+
+/* Glass card wrapper */
+.glass-box {
+    background: rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.35);
+}
+
+/* Table header */
+.table-header {
+    background: #a30000 !important;
+    color: white;
+}
+
+/* Search/filter box */
+.filter-box {
+    background: rgba(255,255,255,0.2);
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+/* Highlighting rows on hover */
+tbody tr:hover {
+    background: rgba(255,255,255,0.15) !important;
+    cursor: pointer;
+}
+</style>
+
+
+<div class="container station-bg mt-4">
+
+    <h2 class="text-center mb-4 fw-bold" style="text-shadow: 0px 0px 12px rgba(0,0,0,0.45);">
+        🚒 Fire Stations Overview
+    </h2>
+
+    <!-- Search & Filters -->
+    <div class="filter-box">
+        <div class="row">
+            <div class="col-md-6 mb-2">
+                <input id="stationSearch" class="form-control" placeholder="Search by name, location, incharge...">
+            </div>
+
+            <div class="col-md-3 mb-2">
+                <select id="zoneFilter" class="form-select">
+                    <option value="">Filter by Zone</option>
+                    {% for st in stations %}
+                        <option value="{{ st.zone_id }}">{{ st.zone_id }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Glass Table -->
+    <div class="glass-box table-responsive">
+        <table class="table table-hover text-white" id="stationTable">
+            <thead class="table-header">
+                <tr>
+                    <th onclick="sortTable(0)">Name</th>
+                    <th onclick="sortTable(1)">Location</th>
+                    <th onclick="sortTable(2)">Zone</th>
+                    <th onclick="sortTable(3)">Station Incharge</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for st in stations %}
+                <tr>
+                    <td>{{ st.name }}</td>
+                    <td>{{ st.location }}</td>
+                    <td>{{ st.zone_id }}</td>
+                    <td>{{ st.station_incharge }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+
+<script>
+// SEARCH + FILTER
+function filterStations() {
+    let search = document.getElementById("stationSearch").value.toLowerCase();
+    let zone = document.getElementById("zoneFilter").value;
+    let rows = document.querySelectorAll("#stationTable tbody tr");
+
+    rows.forEach(row => {
+        let text = row.innerText.toLowerCase();
+        let rowZone = row.children[2].innerText;
+
+        if (text.includes(search) && (zone === "" || rowZone === zone)) {
+            row.style.display = "";
+        } else {
+            row.style.display = "none";
+        }
+    });
+}
+
+document.getElementById("stationSearch").addEventListener("keyup", filterStations);
+document.getElementById("zoneFilter").addEventListener("change", filterStations);
+
+
+// SORTING
+function sortTable(n) {
+    const table = document.getElementById("stationTable");
+    let switching = true;
+    let dir = "asc";
+
+    while (switching) {
+        switching = false;
+        let rows = table.rows;
+
+        for (let i = 1; i < rows.length - 1; i++) {
+            let x = rows[i].getElementsByTagName("TD")[n].innerText.toLowerCase();
+            let y = rows[i + 1].getElementsByTagName("TD")[n].innerText.toLowerCase();
+            let shouldSwitch = false;
+
+            if ((dir === "asc" && x > y) || (dir === "desc" && x < y)) {
+                shouldSwitch = true;
+                break;
+            }
+        }
+
+        if (shouldSwitch) {
+            rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+            switching = true;
+        } 
+        else if (dir === "asc") {
+            dir = "desc";
+            switching = true;
+        }
+    }
+}
+</script>
+
+{% endblock %}

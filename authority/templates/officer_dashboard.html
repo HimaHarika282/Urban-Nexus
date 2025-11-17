@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Officer Dashboard</title>
+    <style>
+        /* Background Gradient */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #4e54c8, #8f94fb);
+            color: #333;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        /* Navigation Bar */
+        nav {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(8px);
+            padding: 15px 30px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav h2 {
+            margin: 0;
+            font-size: 1.5em;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            background-color: rgba(255, 255, 255, 0.25);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        nav a:hover {
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Dashboard Container */
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 16px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #4e54c8;
+            margin-bottom: 25px;
+        }
+
+        .welcome {
+            text-align: center;
+            font-size: 1.2em;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        table th {
+            background-color: #4e54c8;
+            color: white;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f7f7f7;
+        }
+
+        .btn {
+            background: #4e54c8;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            background: #373bb0;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <h2>SmartCity Dashboard</h2>
+        <a href="{{ url_for('authority_bp.logout') }}">Logout</a>
+    </nav>
+
+    <div class="container">
+        <h1>Welcome, {{ current_user.username }}</h1>
+        <p class="welcome">Department ID: {{ current_user.department_id }}</p>
+
+        {% if requests %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Request ID</th>
+                        <th>Citizen Name</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for req in requests %}
+                        <tr>
+                            <td>{{ req.id }}</td>
+                            <td>{{ req.citizen_name }}</td>
+                            <td>{{ req.description }}</td>
+                            <td>{{ req.status }}</td>
+                            <td>
+                                <form method="POST" action="{{ url_for('authority_bp.update_status', request_id=req.id) }}">
+                                    <select name="status">
+                                        <option value="Pending" {% if req.status == 'Pending' %}selected{% endif %}>Pending</option>
+                                        <option value="In Progress" {% if req.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                                        <option value="Resolved" {% if req.status == 'Resolved' %}selected{% endif %}>Resolved</option>
+                                    </select>
+                                    <button class="btn" type="submit">Update</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p style="text-align:center; color:#666;">No citizen requests available.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Smart City - Transport Facilities</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Header/Nav/Sidebar */
+    header {
+      background: #105a53;;
+      color: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+    header h1 { margin:0; font-size:22px; font-weight:700; letter-spacing:1px; }
+    nav { display:flex; align-items:center; gap:20px; }
+    nav a { color:white; text-decoration:none; font-size:15px; padding:8px 14px; border-radius:6px; transition: background 0.3s ease; }
+    nav a:hover { background: rgba(255,255,255,0.2); }
+    .logout-btn { background: #ff4d4d; font-weight:bold; }
+    .logout-btn:hover { background: #2575fc; }
+    .profile img { width:40px; height:40px; border-radius:50%; border:2px solid white; cursor:pointer; }
+
+    .dashboard { display:flex; height:calc(100vh - 60px); }
+    .sidebar {
+      width:220px;
+      background: #105a53;;
+      padding-top:20px;
+      display:flex;
+      flex-direction:column;
+    }
+    .sidebar a { color:white; text-decoration:none; padding:12px 20px; display:block; transition: background 0.3s ease, transform 0.2s; }
+    .sidebar a:hover, .sidebar a.active { background: rgba(255,255,255,0.15); transform: translateX(5px); }
+
+    main.content {
+      flex:1;
+      padding:40px;
+      background: linear-gradient(120deg, #f0f4ff, #e7ecff);
+      border-radius: 20px 0 0 20px;
+      box-shadow: inset 0 0 20px rgba(75,108,183,0.15);
+      overflow-y:auto;
+    }
+
+    /* Page Title */
+    h1.page-title { text-align:center; font-size:32px; margin-bottom:20px; color:#182848; }
+
+    /* Transport type selector buttons */
+    .transport-selector {
+      display:flex;
+      justify-content:center;
+      gap:20px;
+      margin-bottom:30px;
+      flex-wrap:wrap;
+    }
+    .transport-selector button {
+      padding:12px 25px;
+      font-size:16px;
+      font-weight:bold;
+      border:none;
+      border-radius:10px;
+      cursor:pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
+      color:white;
+      background:#2d9cdb; /* blue default */
+    }
+    .transport-selector button.active { background:#f5a623; } /* orange when selected */
+
+    /* Transport Cards */
+    .transport-container {
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap:20px;
+      padding:0 20px;
+    }
+    .transport-card {
+      background: linear-gradient(145deg, #ffffff, #e6f0ff);
+      padding:25px 20px;
+      border-radius:15px;
+      box-shadow:0 6px 15px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .transport-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+    .transport-icon { font-size:36px; width:60px; text-align:center; }
+    .transport-card h3 { margin:10px 0 8px 0; font-size:22px; }
+    .transport-card p { margin:4px 0; font-size:15px; }
+    .route { font-weight:bold; color:#0f3f3f; }
+    .timing, .fare { color:#135058; }
+
+    @media (max-width:768px) { .transport-container { grid-template-columns:1fr; padding:0 10px; } }
+
+  </style>
+</head>
+<body>
+  <header>
+    <h1>URBAN NEXUS</h1>
+    <nav>
+      <a href="{{ url_for('citizen_bp.index') }}">Home</a>
+      <a href="{{ url_for('citizen_bp.about') }}">About Us</a>
+      <a href="{{ url_for('citizen_bp.contact') }}">Contact</a>
+      <a href="{{ url_for('citizen_bp.profile') }}" class="profile">
+        <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Profile">
+      </a>
+      <a href="{{ url_for('citizen_bp.citizen_login') }}" class="logout-btn">Logout</a>
+    </nav>
+  </header>
+
+  <div class="dashboard">
+    <aside class="sidebar">
+      <a href="{{ url_for('citizen_bp.properties') }}">Properties</a>
+      <a href="{{ url_for('citizen_bp.utility') }}">Utilities</a>
+      <a href="{{ url_for('citizen_bp.citizen_requests') }}">Requests</a>
+      <a href="{{ url_for('citizen_bp.emergency_requests') }}">Emergency</a>
+      <a href="{{ url_for('citizen_bp.transport') }}" class="active">Transport</a>
+    </aside>
+
+    <main class="content">
+      <h1 class="page-title">🚍 Smart City Transport Facilities</h1>
+
+      <!-- Transport Type Selector -->
+      <div class="transport-selector">
+        <button class="bus active" onclick="filterTransport('bus')">Bus</button>
+        <button class="metro" onclick="filterTransport('metro')">Metro</button>
+      </div>
+
+      {% if not transports %}
+        <p class="no-results">No transport facilities available currently.</p>
+      {% else %}
+        <div class="transport-container" id="transportContainer">
+          {% for t in transports %}
+            {% if t.transport_type.lower() in ['bus','metro'] %}
+            <div class="transport-card" data-type="{{ t.transport_type.lower() }}">
+              <div class="transport-icon">
+                {% if t.transport_type.lower()=='bus' %}
+                  <i class="fas fa-bus"></i>
+                {% elif t.transport_type.lower()=='metro' %}
+                  <i class="fas fa-train"></i>
+                {% endif %}
+              </div>
+              <h3>{{ t.transport_type }}</h3>
+              <p class="route">From: {{ t.from_location }} → To: {{ t.to_location }}</p>
+              <p class="timing"><strong>Timings:</strong> {{ t.timings }}</p>
+              <p class="fare"><strong>Fare:</strong> {{ t.fare }}</p>
+            </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% endif %}
+    </main>
+  </div>
+
+  <script>
+    function filterTransport(type) {
+      const buttons = document.querySelectorAll('.transport-selector button');
+
+      // Remove active class from all buttons
+      buttons.forEach(btn => btn.classList.remove('active'));
+
+      // Add active class to clicked button
+      document.querySelector('.' + type).classList.add('active');
+
+      // Show/hide transport cards
+      document.querySelectorAll('.transport-card').forEach(card => {
+        card.style.display = (card.dataset.type === type) ? 'block' : 'none';
+      });
+    }
+
+    // default selection = bus
+    filterTransport('bus');
+  </script>
+</body>
+</html>
